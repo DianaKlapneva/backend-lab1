@@ -23,7 +23,6 @@ class LoginDto {
     password: string;
 }
 
-// DTO для ответа
 class LoginResponseDto {
     @IsString()
     @Type(() => String)
