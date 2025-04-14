@@ -17,3 +17,4 @@
 - Полная типизация для UserController
 - Кастомизируемая валидация паролей
 - Расширение класса BaseController, включение в него базового CRUD
+- Переход на [tsoa](https://tsoa-community.github.io/docs/) с [routing-controllers](https://github.com/typestack/routing-controllers)
