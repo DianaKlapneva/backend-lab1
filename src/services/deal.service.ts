@@ -1,38 +1,42 @@
 import { Repository } from 'typeorm';
 import { AppDataSource } from '../data-source';
-import { Estate } from '../models/Estate.entity';
-import { CreateEstateDto, UpdateEstateDto } from '../dto/estate.dto';
+import { Deal } from '../models/Deal.entity';
+import { CreateDealDto, UpdateDealDto } from '../dto/deal.dto';
 
-export class EstateService {
-    private estateRepository: Repository<Estate>;
+export class DealService {
+    private dealRepository: Repository<Deal>;
 
     constructor() {
-        this.estateRepository = AppDataSource.getRepository(Estate);
+        this.dealRepository = AppDataSource.getRepository(Deal);
     }
 
-    async findAll(): Promise<Estate[]> {
-        return await this.estateRepository.find();
+    async findAll(): Promise<Deal[]> {
+        return await this.dealRepository.find({ relations: ['estates'] });
     }
 
-    async findById(id: number): Promise<Estate | null> {
-        return await this.estateRepository.findOneBy({ id });
+    async findById(id: number): Promise<Deal | null> {
+        return await this.dealRepository.findOne({
+            where: { id },
+            relations: ['estates']
+        });
     }
 
-    async create(data: CreateEstateDto): Promise<Estate> {
-        const estate = this.estateRepository.create(data);
-        return await this.estateRepository.save(estate);
+    async create(data: CreateDealDto): Promise<Deal> {
+        const deal = this.dealRepository.create(data);
+        return await this.dealRepository.save(deal);
     }
 
-    async update(id: number, data: UpdateEstateDto): Promise<Estate | null> {
-        const estate = await this.estateRepository.findOneBy({ id });
-        if (!estate) return null;
+    async update(id: number, data: UpdateDealDto): Promise<Deal | null> {
+        const deal = await this.dealRepository.findOneBy({ id });
+        if (!deal) return null;
 
-        Object.assign(estate, data);
-        return await this.estateRepository.save(estate);
+        Object.assign(deal, data);
+        return await this.dealRepository.save(deal);
     }
 
     async delete(id: number): Promise<boolean> {
-        const result = await this.estateRepository.delete(id);
-        return result.affected !== undefined && result.affected > 0;
+        const result = await this.dealRepository.delete(id);
+        // Исправлено: проверка на null
+        return result.affected !== undefined && result.affected !== null && result.affected > 0;
     }
 }

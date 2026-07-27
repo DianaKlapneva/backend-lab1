@@ -36,6 +36,7 @@ export class MessageService {
 
     async delete(id: number): Promise<boolean> {
         const result = await this.messageRepository.delete(id);
-        return result.affected !== undefined && result.affected > 0;
+        // Исправлено: проверка на null
+        return result.affected !== undefined && result.affected !== null && result.affected > 0;
     }
 }

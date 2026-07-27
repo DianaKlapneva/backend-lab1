@@ -25,6 +25,7 @@ export class SessionService {
 
     async delete(id: number): Promise<boolean> {
         const result = await this.sessionRepository.delete(id);
-        return result.affected !== undefined && result.affected > 0;
+        // Исправлено: проверка на null
+        return result.affected !== undefined && result.affected !== null && result.affected > 0;
     }
 }

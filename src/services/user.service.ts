@@ -46,7 +46,8 @@ export class UserService {
 
     async delete(id: number): Promise<boolean> {
         const result = await this.userRepository.delete(id);
-        return result.affected !== undefined && result.affected > 0;
+        // Исправлено: проверка на null
+        return result.affected !== undefined && result.affected !== null && result.affected > 0;
     }
 
     private toResponse(user: User): UserResponse {
