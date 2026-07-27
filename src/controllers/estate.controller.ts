@@ -1,47 +1,47 @@
 import { Request, Response } from 'express';
-import { UserService } from '../services/user.service';
-import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
+import { EstateService } from '../services/estate.service';
+import { CreateEstateDto, UpdateEstateDto } from '../dto/estate.dto';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 
-export class UserController {
-    private userService: UserService;
+export class EstateController {
+    private estateService: EstateService;
 
     constructor() {
-        this.userService = new UserService();
+        this.estateService = new EstateService();
     }
 
-    listUsers = async (req: Request, res: Response): Promise<void> => {
+    listEstates = async (req: Request, res: Response): Promise<void> => {
         try {
-            const users = await this.userService.findAll();
-            res.json(users);
+            const estates = await this.estateService.findAll();
+            res.json(estates);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }
     };
 
-    getUser = async (req: Request, res: Response): Promise<void> => {
+    getEstate = async (req: Request, res: Response): Promise<void> => {
         try {
-            const userId = parseInt(req.params.userId);
-            const user = await this.userService.findById(userId);
+            const estateId = parseInt(req.params.estateId);
+            const estate = await this.estateService.findById(estateId);
 
-            if (!user) {
+            if (!estate) {
                 res.status(404).json({
                     statusCode: 404,
-                    error: { code: 'NOT_FOUND', message: 'User not found' }
+                    error: { code: 'NOT_FOUND', message: 'Estate not found' }
                 });
                 return;
             }
 
-            res.json(user);
+            res.json(estate);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }
     };
 
-    createUser = async (req: Request, res: Response): Promise<void> => {
+    createEstate = async (req: Request, res: Response): Promise<void> => {
         try {
-            const dto = plainToInstance(CreateUserDto, req.body);
+            const dto = plainToInstance(CreateEstateDto, req.body);
             const errors = await validate(dto);
 
             if (errors.length > 0) {
@@ -59,27 +59,17 @@ export class UserController {
                 return;
             }
 
-            const user = await this.userService.create(dto);
-            res.status(201).json(user);
-        } catch (error: any) {
-            if (error.code === '23505') {
-                res.status(422).json({
-                    statusCode: 422,
-                    error: {
-                        code: 'VALIDATION_ERROR',
-                        message: 'Email already exists'
-                    }
-                });
-                return;
-            }
+            const estate = await this.estateService.create(dto);
+            res.status(201).json(estate);
+        } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }
     };
 
-    updateUser = async (req: Request, res: Response): Promise<void> => {
+    updateEstate = async (req: Request, res: Response): Promise<void> => {
         try {
-            const userId = parseInt(req.params.userId);
-            const dto = plainToInstance(UpdateUserDto, req.body);
+            const estateId = parseInt(req.params.estateId);
+            const dto = plainToInstance(UpdateEstateDto, req.body);
             const errors = await validate(dto, { skipMissingProperties: true });
 
             if (errors.length > 0) {
@@ -97,31 +87,31 @@ export class UserController {
                 return;
             }
 
-            const user = await this.userService.update(userId, dto);
+            const estate = await this.estateService.update(estateId, dto);
 
-            if (!user) {
+            if (!estate) {
                 res.status(404).json({
                     statusCode: 404,
-                    error: { code: 'NOT_FOUND', message: 'User not found' }
+                    error: { code: 'NOT_FOUND', message: 'Estate not found' }
                 });
                 return;
             }
 
-            res.json(user);
+            res.json(estate);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }
     };
 
-    deleteUser = async (req: Request, res: Response): Promise<void> => {
+    deleteEstate = async (req: Request, res: Response): Promise<void> => {
         try {
-            const userId = parseInt(req.params.userId);
-            const deleted = await this.userService.delete(userId);
+            const estateId = parseInt(req.params.estateId);
+            const deleted = await this.estateService.delete(estateId);
 
             if (!deleted) {
                 res.status(404).json({
                     statusCode: 404,
-                    error: { code: 'NOT_FOUND', message: 'User not found' }
+                    error: { code: 'NOT_FOUND', message: 'Estate not found' }
                 });
                 return;
             }

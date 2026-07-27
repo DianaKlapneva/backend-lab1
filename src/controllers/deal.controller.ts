@@ -1,47 +1,47 @@
 import { Request, Response } from 'express';
-import { UserService } from '../services/user.service';
-import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
+import { DealService } from '../services/deal.service';
+import { CreateDealDto, UpdateDealDto } from '../dto/deal.dto';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 
-export class UserController {
-    private userService: UserService;
+export class DealController {
+    private dealService: DealService;
 
     constructor() {
-        this.userService = new UserService();
+        this.dealService = new DealService();
     }
 
-    listUsers = async (req: Request, res: Response): Promise<void> => {
+    listDeals = async (req: Request, res: Response): Promise<void> => {
         try {
-            const users = await this.userService.findAll();
-            res.json(users);
+            const deals = await this.dealService.findAll();
+            res.json(deals);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }
     };
 
-    getUser = async (req: Request, res: Response): Promise<void> => {
+    getDeal = async (req: Request, res: Response): Promise<void> => {
         try {
-            const userId = parseInt(req.params.userId);
-            const user = await this.userService.findById(userId);
+            const dealId = parseInt(req.params.dealId);
+            const deal = await this.dealService.findById(dealId);
 
-            if (!user) {
+            if (!deal) {
                 res.status(404).json({
                     statusCode: 404,
-                    error: { code: 'NOT_FOUND', message: 'User not found' }
+                    error: { code: 'NOT_FOUND', message: 'Deal not found' }
                 });
                 return;
             }
 
-            res.json(user);
+            res.json(deal);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }
     };
 
-    createUser = async (req: Request, res: Response): Promise<void> => {
+    createDeal = async (req: Request, res: Response): Promise<void> => {
         try {
-            const dto = plainToInstance(CreateUserDto, req.body);
+            const dto = plainToInstance(CreateDealDto, req.body);
             const errors = await validate(dto);
 
             if (errors.length > 0) {
@@ -59,27 +59,17 @@ export class UserController {
                 return;
             }
 
-            const user = await this.userService.create(dto);
-            res.status(201).json(user);
-        } catch (error: any) {
-            if (error.code === '23505') {
-                res.status(422).json({
-                    statusCode: 422,
-                    error: {
-                        code: 'VALIDATION_ERROR',
-                        message: 'Email already exists'
-                    }
-                });
-                return;
-            }
+            const deal = await this.dealService.create(dto);
+            res.status(201).json(deal);
+        } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }
     };
 
-    updateUser = async (req: Request, res: Response): Promise<void> => {
+    updateDeal = async (req: Request, res: Response): Promise<void> => {
         try {
-            const userId = parseInt(req.params.userId);
-            const dto = plainToInstance(UpdateUserDto, req.body);
+            const dealId = parseInt(req.params.dealId);
+            const dto = plainToInstance(UpdateDealDto, req.body);
             const errors = await validate(dto, { skipMissingProperties: true });
 
             if (errors.length > 0) {
@@ -97,31 +87,31 @@ export class UserController {
                 return;
             }
 
-            const user = await this.userService.update(userId, dto);
+            const deal = await this.dealService.update(dealId, dto);
 
-            if (!user) {
+            if (!deal) {
                 res.status(404).json({
                     statusCode: 404,
-                    error: { code: 'NOT_FOUND', message: 'User not found' }
+                    error: { code: 'NOT_FOUND', message: 'Deal not found' }
                 });
                 return;
             }
 
-            res.json(user);
+            res.json(deal);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }
     };
 
-    deleteUser = async (req: Request, res: Response): Promise<void> => {
+    deleteDeal = async (req: Request, res: Response): Promise<void> => {
         try {
-            const userId = parseInt(req.params.userId);
-            const deleted = await this.userService.delete(userId);
+            const dealId = parseInt(req.params.dealId);
+            const deleted = await this.dealService.delete(dealId);
 
             if (!deleted) {
                 res.status(404).json({
                     statusCode: 404,
-                    error: { code: 'NOT_FOUND', message: 'User not found' }
+                    error: { code: 'NOT_FOUND', message: 'Deal not found' }
                 });
                 return;
             }
