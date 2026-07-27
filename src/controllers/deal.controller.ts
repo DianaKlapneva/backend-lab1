@@ -11,6 +11,28 @@ export class DealController {
         this.dealService = new DealService();
     }
 
+    /**
+     * @swagger
+     * /deals:
+     *   get:
+     *     summary: Get all deals
+     *     tags: [Deals]
+     *     responses:
+     *       200:
+     *         description: List of deals
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Deal'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     listDeals = async (req: Request, res: Response): Promise<void> => {
         try {
             const deals = await this.dealService.findAll();
@@ -20,6 +42,32 @@ export class DealController {
         }
     };
 
+    /**
+     * @swagger
+     * /deals/{dealId}:
+     *   get:
+     *     summary: Get deal by ID
+     *     tags: [Deals]
+     *     parameters:
+     *       - in: path
+     *         name: dealId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       200:
+     *         description: Deal found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Deal'
+     *       404:
+     *         description: Deal not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     getDeal = async (req: Request, res: Response): Promise<void> => {
         try {
             const dealId = parseInt(req.params.dealId);
@@ -39,6 +87,38 @@ export class DealController {
         }
     };
 
+    /**
+     * @swagger
+     * /deals:
+     *   post:
+     *     summary: Create a new deal
+     *     tags: [Deals]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/CreateDealRequest'
+     *     responses:
+     *       201:
+     *         description: Deal created
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Deal'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       404:
+     *         description: User not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     createDeal = async (req: Request, res: Response): Promise<void> => {
         try {
             const dto = plainToInstance(CreateDealDto, req.body);
@@ -66,6 +146,44 @@ export class DealController {
         }
     };
 
+    /**
+     * @swagger
+     * /deals/{dealId}:
+     *   patch:
+     *     summary: Update deal by ID
+     *     tags: [Deals]
+     *     parameters:
+     *       - in: path
+     *         name: dealId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/UpdateDealRequest'
+     *     responses:
+     *       200:
+     *         description: Deal updated
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Deal'
+     *       404:
+     *         description: Deal not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     updateDeal = async (req: Request, res: Response): Promise<void> => {
         try {
             const dealId = parseInt(req.params.dealId);
@@ -103,6 +221,34 @@ export class DealController {
         }
     };
 
+    /**
+     * @swagger
+     * /deals/{dealId}:
+     *   delete:
+     *     summary: Delete deal by ID
+     *     tags: [Deals]
+     *     parameters:
+     *       - in: path
+     *         name: dealId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       204:
+     *         description: Deal deleted
+     *       404:
+     *         description: Deal not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       403:
+     *         description: Forbidden
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     deleteDeal = async (req: Request, res: Response): Promise<void> => {
         try {
             const dealId = parseInt(req.params.dealId);

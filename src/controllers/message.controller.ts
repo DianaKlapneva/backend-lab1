@@ -11,6 +11,39 @@ export class MessageController {
         this.messageService = new MessageService();
     }
 
+    /**
+     * @swagger
+     * /messages:
+     *   get:
+     *     summary: Get all messages (with optional filters)
+     *     tags: [Messages]
+     *     parameters:
+     *       - in: query
+     *         name: session_id
+     *         schema:
+     *           type: integer
+     *         description: Filter by session ID
+     *       - in: query
+     *         name: user_id
+     *         schema:
+     *           type: integer
+     *         description: Filter by user ID
+     *     responses:
+     *       200:
+     *         description: List of messages
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Message'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     listMessages = async (req: Request, res: Response): Promise<void> => {
         try {
             const session_id = req.query.session_id ? parseInt(req.query.session_id as string) : undefined;
@@ -23,6 +56,32 @@ export class MessageController {
         }
     };
 
+    /**
+     * @swagger
+     * /messages/{messageId}:
+     *   get:
+     *     summary: Get message by ID
+     *     tags: [Messages]
+     *     parameters:
+     *       - in: path
+     *         name: messageId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       200:
+     *         description: Message found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Message'
+     *       404:
+     *         description: Message not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     getMessage = async (req: Request, res: Response): Promise<void> => {
         try {
             const messageId = parseInt(req.params.messageId);
@@ -42,6 +101,38 @@ export class MessageController {
         }
     };
 
+    /**
+     * @swagger
+     * /messages:
+     *   post:
+     *     summary: Create a new message
+     *     tags: [Messages]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/CreateMessageRequest'
+     *     responses:
+     *       201:
+     *         description: Message created
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Message'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       404:
+     *         description: User or Session not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     createMessage = async (req: Request, res: Response): Promise<void> => {
         try {
             const dto = plainToInstance(CreateMessageDto, req.body);
@@ -69,6 +160,44 @@ export class MessageController {
         }
     };
 
+    /**
+     * @swagger
+     * /messages/{messageId}:
+     *   patch:
+     *     summary: Update message by ID
+     *     tags: [Messages]
+     *     parameters:
+     *       - in: path
+     *         name: messageId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/UpdateMessageRequest'
+     *     responses:
+     *       200:
+     *         description: Message updated
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Message'
+     *       404:
+     *         description: Message not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     updateMessage = async (req: Request, res: Response): Promise<void> => {
         try {
             const messageId = parseInt(req.params.messageId);
@@ -106,6 +235,34 @@ export class MessageController {
         }
     };
 
+    /**
+     * @swagger
+     * /messages/{messageId}:
+     *   delete:
+     *     summary: Delete message by ID
+     *     tags: [Messages]
+     *     parameters:
+     *       - in: path
+     *         name: messageId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       204:
+     *         description: Message deleted
+     *       404:
+     *         description: Message not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       403:
+     *         description: Forbidden
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     deleteMessage = async (req: Request, res: Response): Promise<void> => {
         try {
             const messageId = parseInt(req.params.messageId);

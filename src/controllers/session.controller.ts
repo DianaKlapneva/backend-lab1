@@ -11,6 +11,28 @@ export class SessionController {
         this.sessionService = new SessionService();
     }
 
+    /**
+     * @swagger
+     * /sessions:
+     *   get:
+     *     summary: Get all sessions
+     *     tags: [Sessions]
+     *     responses:
+     *       200:
+     *         description: List of sessions
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Session'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     listSessions = async (req: Request, res: Response): Promise<void> => {
         try {
             const sessions = await this.sessionService.findAll();
@@ -20,6 +42,32 @@ export class SessionController {
         }
     };
 
+    /**
+     * @swagger
+     * /sessions/{sessionId}:
+     *   get:
+     *     summary: Get session by ID
+     *     tags: [Sessions]
+     *     parameters:
+     *       - in: path
+     *         name: sessionId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       200:
+     *         description: Session found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Session'
+     *       404:
+     *         description: Session not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     getSession = async (req: Request, res: Response): Promise<void> => {
         try {
             const sessionId = parseInt(req.params.sessionId);
@@ -39,6 +87,38 @@ export class SessionController {
         }
     };
 
+    /**
+     * @swagger
+     * /sessions:
+     *   post:
+     *     summary: Create a new session
+     *     tags: [Sessions]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/CreateSessionRequest'
+     *     responses:
+     *       201:
+     *         description: Session created
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Session'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       404:
+     *         description: User not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     createSession = async (req: Request, res: Response): Promise<void> => {
         try {
             const dto = plainToInstance(CreateSessionDto, req.body);
@@ -66,6 +146,28 @@ export class SessionController {
         }
     };
 
+    /**
+     * @swagger
+     * /sessions/{sessionId}:
+     *   delete:
+     *     summary: Delete session by ID
+     *     tags: [Sessions]
+     *     parameters:
+     *       - in: path
+     *         name: sessionId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       204:
+     *         description: Session deleted
+     *       404:
+     *         description: Session not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     deleteSession = async (req: Request, res: Response): Promise<void> => {
         try {
             const sessionId = parseInt(req.params.sessionId);

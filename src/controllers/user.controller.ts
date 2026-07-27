@@ -11,6 +11,22 @@ export class UserController {
         this.userService = new UserService();
     }
 
+    /**
+     * @swagger
+     * /users:
+     *   get:
+     *     summary: Get all users
+     *     tags: [Users]
+     *     responses:
+     *       200:
+     *         description: List of users
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/User'
+     */
     listUsers = async (req: Request, res: Response): Promise<void> => {
         try {
             const users = await this.userService.findAll();
@@ -20,6 +36,32 @@ export class UserController {
         }
     };
 
+    /**
+     * @swagger
+     * /users/{userId}:
+     *   get:
+     *     summary: Get user by ID
+     *     tags: [Users]
+     *     parameters:
+     *       - in: path
+     *         name: userId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       200:
+     *         description: User found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/User'
+     *       404:
+     *         description: User not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     getUser = async (req: Request, res: Response): Promise<void> => {
         try {
             const userId = parseInt(req.params.userId);
@@ -39,6 +81,32 @@ export class UserController {
         }
     };
 
+    /**
+     * @swagger
+     * /users:
+     *   post:
+     *     summary: Create a new user
+     *     tags: [Users]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/CreateUserRequest'
+     *     responses:
+     *       201:
+     *         description: User created
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/User'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     createUser = async (req: Request, res: Response): Promise<void> => {
         try {
             const dto = plainToInstance(CreateUserDto, req.body);
@@ -76,6 +144,44 @@ export class UserController {
         }
     };
 
+    /**
+     * @swagger
+     * /users/{userId}:
+     *   patch:
+     *     summary: Update user by ID
+     *     tags: [Users]
+     *     parameters:
+     *       - in: path
+     *         name: userId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/UpdateUserRequest'
+     *     responses:
+     *       200:
+     *         description: User updated
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/User'
+     *       404:
+     *         description: User not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     updateUser = async (req: Request, res: Response): Promise<void> => {
         try {
             const userId = parseInt(req.params.userId);
@@ -113,6 +219,34 @@ export class UserController {
         }
     };
 
+    /**
+     * @swagger
+     * /users/{userId}:
+     *   delete:
+     *     summary: Delete user by ID
+     *     tags: [Users]
+     *     parameters:
+     *       - in: path
+     *         name: userId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       204:
+     *         description: User deleted
+     *       404:
+     *         description: User not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       403:
+     *         description: Forbidden
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     deleteUser = async (req: Request, res: Response): Promise<void> => {
         try {
             const userId = parseInt(req.params.userId);

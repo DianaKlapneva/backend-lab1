@@ -11,6 +11,28 @@ export class EstateController {
         this.estateService = new EstateService();
     }
 
+    /**
+     * @swagger
+     * /estates:
+     *   get:
+     *     summary: Get all estates
+     *     tags: [Estates]
+     *     responses:
+     *       200:
+     *         description: List of estates
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Estate'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     listEstates = async (req: Request, res: Response): Promise<void> => {
         try {
             const estates = await this.estateService.findAll();
@@ -20,6 +42,32 @@ export class EstateController {
         }
     };
 
+    /**
+     * @swagger
+     * /estates/{estateId}:
+     *   get:
+     *     summary: Get estate by ID
+     *     tags: [Estates]
+     *     parameters:
+     *       - in: path
+     *         name: estateId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       200:
+     *         description: Estate found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Estate'
+     *       404:
+     *         description: Estate not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     getEstate = async (req: Request, res: Response): Promise<void> => {
         try {
             const estateId = parseInt(req.params.estateId);
@@ -39,6 +87,38 @@ export class EstateController {
         }
     };
 
+    /**
+     * @swagger
+     * /estates:
+     *   post:
+     *     summary: Create a new estate
+     *     tags: [Estates]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/CreateEstateRequest'
+     *     responses:
+     *       201:
+     *         description: Estate created
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Estate'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       404:
+     *         description: User not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     createEstate = async (req: Request, res: Response): Promise<void> => {
         try {
             const dto = plainToInstance(CreateEstateDto, req.body);
@@ -66,6 +146,44 @@ export class EstateController {
         }
     };
 
+    /**
+     * @swagger
+     * /estates/{estateId}:
+     *   patch:
+     *     summary: Update estate by ID
+     *     tags: [Estates]
+     *     parameters:
+     *       - in: path
+     *         name: estateId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/UpdateEstateRequest'
+     *     responses:
+     *       200:
+     *         description: Estate updated
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Estate'
+     *       404:
+     *         description: Estate not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       422:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     updateEstate = async (req: Request, res: Response): Promise<void> => {
         try {
             const estateId = parseInt(req.params.estateId);
@@ -103,6 +221,34 @@ export class EstateController {
         }
     };
 
+    /**
+     * @swagger
+     * /estates/{estateId}:
+     *   delete:
+     *     summary: Delete estate by ID
+     *     tags: [Estates]
+     *     parameters:
+     *       - in: path
+     *         name: estateId
+     *         required: true
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       204:
+     *         description: Estate deleted
+     *       404:
+     *         description: Estate not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     *       403:
+     *         description: Forbidden
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Error'
+     */
     deleteEstate = async (req: Request, res: Response): Promise<void> => {
         try {
             const estateId = parseInt(req.params.estateId);
