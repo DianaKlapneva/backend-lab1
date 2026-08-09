@@ -13,13 +13,13 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ---------- НАСТРОЙКА SWAGGER ----------
+
 const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
@@ -258,47 +258,47 @@ const swaggerOptions = {
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
-// ---------- КОНЕЦ НАСТРОЙКИ SWAGGER ----------
 
-// Swagger UI
+
+// тут Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/api-docs.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
 });
 
-// API Routes
+
 app.use('/api/v1', routes);
 
-// Health check
+
 app.get('/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Error handling
+
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error('Error:', err.stack);
     res.status(500).json({
         statusCode: 500,
         error: {
             code: 'INTERNAL_SERVER_ERROR',
-            message: 'Something went wrong!'
+            message: 'Something went wrong'
         }
     });
 });
 
-// Start server
+
 AppDataSource.initialize()
     .then(() => {
-        console.log('✅ Data Source has been initialized!');
+        console.log('Data Source инициирован');
         app.listen(PORT, () => {
-            console.log(`🚀 Server is running on http://localhost:${PORT}`);
-            console.log(`📚 Swagger UI: http://localhost:${PORT}/api-docs`);
-            console.log(`❤️  Health check: http://localhost:${PORT}/health`);
+            console.log(`Сервер: http://localhost:${PORT}`);
+            console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
+            console.log(`Статус работы: http://localhost:${PORT}/health`);
         });
     })
     .catch((error) => {
-        console.error('❌ Error during Data Source initialization:', error);
+        console.error('Error:', error);
         process.exit(1);
     });
 
